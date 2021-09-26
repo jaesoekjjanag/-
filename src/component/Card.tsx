@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
+import { Card, CardMedia, CardContent, Typography } from '@mui/material'
 
 interface CardProps {
   data: {
@@ -8,35 +9,6 @@ interface CardProps {
     url: string,
   }
 }
-
-const CardDiv = styled.div`
-  height: 250px;
-  width: 200px;
-  border: 1px solid black;
-  display: inline-block;
-  margin:6px;
-  background-color:white;
-`
-const Name = styled.div`
-  padding-left: 8px;
-  h3{
-    margin:0;
-  }
-`
-const Image = styled.img`
-  height: 200px;
-  width: 200px;
-  display:block;
-  border-top: 0.5px solid black;
-  border-bottom: 0.5px solid black;
-  cursor:pointer;
-
-`
-const TypesDiv = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`
 
 
 interface Types {
@@ -58,7 +30,7 @@ interface Images {
   front_shiny_female?: string
 }
 
-export default function Card({ data }: CardProps) {
+export default function Acard({ data }: CardProps) {
   const [image, setImage] = useState<Images | null>(null);
   const [types, setTypes] = useState<Types[] | null>(null);
   useEffect(() => {
@@ -66,7 +38,6 @@ export default function Card({ data }: CardProps) {
       .then(res => {
         setImage(res.data.sprites)
         setTypes(res.data.types)
-        console.log(res.data)
       })
   }, [data])
 
@@ -79,14 +50,24 @@ export default function Card({ data }: CardProps) {
   }
 
   return (
-    <CardDiv>
-      <Name><h3>{data.name}</h3></Name>
-      <Image onMouseEnter={flipImage} onMouseOut={flipImage} src={`${image?.front_default}`} alt="" />
-      <TypesDiv>
-        <span>{types && types[0].type.name}</span>
-        , <span>{types && types[1]?.type.name}</span>
-        <span></span>
-      </TypesDiv>
-    </CardDiv>
+    <Card sx={{ width: '170px', m: "auto", my: 1 }}>
+      <CardMedia
+        onMouseOver={flipImage}
+        onMouseOut={flipImage}
+        component="img"
+        height="150"
+        image={`${image?.front_default}`}
+        alt="green iguana"
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h6" component="div">
+          {data.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {types && types[0].type.name + " "}
+          {types && types[1]?.type.name}
+        </Typography>
+      </CardContent>
+    </Card>
   )
 }
